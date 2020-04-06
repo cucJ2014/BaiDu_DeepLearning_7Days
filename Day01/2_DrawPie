@@ -1,0 +1,21 @@
+import json
+import pyecharts
+
+# 读取json文件中省份名称以及累计确诊病例数目
+# 分别存入数组province和confirm当中
+data = open("data/20200401.json", encoding='utf-8')
+setting = json.load(data)
+province = []
+confirm = []
+for i in range(len(setting)):
+    province.append(setting[i]["provinceShortName"])
+    confirm.append(int(setting[i]["confirmedCount"]))
+data.close()
+
+from pyecharts import options
+# 制作饼图 配置系列参数以及全局参数
+pie = pyecharts.charts.Pie()
+pie.add("", [list(z) for z in zip(province,confirm)],rosetype="radius",radius="55%",center=["50%", "70%"],label_opts=options.LabelOpts(is_show=True))
+pie.set_series_opts(label_opts=options.LabelOpts(formatter="{b}: {c}"))
+pie.set_global_opts(title_opts=options.TitleOpts(title="4月1日全国新冠肺炎累计图"),legend_opts=options.LegendOpts(is_show=False))
+pie.render()
